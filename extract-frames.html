@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>视频首帧提取工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #111;
+            color: #fff;
+        }
+        h1 {
+            color: #D4AF37;
+            margin-bottom: 30px;
+        }
+        .video-container {
+            margin: 20px 0;
+            border: 2px solid #333;
+            padding: 20px;
+            border-radius: 8px;
+            background: #1a1a1a;
+        }
+        video {
+            max-width: 100%;
+            margin: 10px 0;
+        }
+        canvas {
+            max-width: 100%;
+            margin: 10px 0;
+            border: 1px solid #555;
+        }
+        button {
+            background: #D4AF37;
+            color: #111;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #C9A227;
+        }
+        input[type="file"] {
+            margin: 10px 0;
+        }
+        .download-link {
+            display: inline-block;
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background: #333;
+            color: #D4AF37;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        .download-link:hover {
+            background: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 视频首帧提取工具</h1>
+    
+    <div class="video-container">
+        <h3>MCN视频</h3>
+        <video id="video1" controls>
+            <source src="portfolio/video/mcn-video.mp4" type="video/mp4">
+        </video>
+        <canvas id="canvas1"></canvas>
+        <br>
+        <button onclick="extractFrame(1)">提取首帧</button>
+        <a id="download1" class="download-link" style="display: none;">下载首帧</a>
+    </div>
+    
+    <div class="video-container">
+        <h3>政府项目视频</h3>
+        <video id="video2" controls>
+            <source src="portfolio/video/government-video.mp4" type="video/mp4">
+        </video>
+        <canvas id="canvas2"></canvas>
+        <br>
+        <button onclick="extractFrame(2)">提取首帧</button>
+        <a id="download2" class="download-link" style="display: none;">下载首帧</a>
+    </div>
+    
+    <div class="video-container">
+        <h3>动漫视频</h3>
+        <video id="video3" controls>
+            <source src="portfolio/video/anime-video-1.mp4" type="video/mp4">
+        </video>
+        <canvas id="canvas3"></canvas>
+        <br>
+        <button onclick="extractFrame(3)">提取首帧</button>
+        <a id="download3" class="download-link" style="display: none;">下载首帧</a>
+    </div>
+    
+    <script>
+        function extractFrame(num) {
+            const video = document.getElementById('video' + num);
+            const canvas = document.getElementById('canvas' + num);
+            const downloadLink = document.getElementById('download' + num);
+            
+            video.currentTime = 0;
+            
+            video.onseeked = function() {
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    downloadLink.href = url;
+                    downloadLink.download = 'video-cover-' + num + '.jpg';
+                    downloadLink.style.display = 'inline-block';
+                    downloadLink.textContent = '下载首帧';
+                }, 'image/jpeg', 0.9);
+            };
+        }
+    </script>
+</body>
+</html>
